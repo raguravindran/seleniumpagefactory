@@ -1,2 +1,0 @@
-# alationproject
-for assignment
