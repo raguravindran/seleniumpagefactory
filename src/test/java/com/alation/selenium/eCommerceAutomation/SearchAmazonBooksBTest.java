@@ -39,37 +39,37 @@ public class SearchAmazonBooksBTest extends AbstractBrowser {
 	@Test( groups = { "smoke", CLAZZ, Priority.P1 })
 	public void verifyProductTitleTest() throws Exception {
 		searchAndNavigateToFirstResult(TestConstants.Categories.BOOKS, SEARCH_TEXT);
-		String titleOnPage = getTextForElements(pom.productTitle);
+		String titleOnPage = getTextForElements(bookPage.productTitle);
 		log.info("Test case run for product - " + titleOnPage);
-		title = isProductTitleDisplayed();
+		title = bookPage.isProductTitleDisplayed();
 		extentReport.assertTrue(title, "Book title was found", "Did not Find the title");
-		rating = isBookAverageRatingDisplayed();
-		String noOfCustReviews = getTextForElements(pom.totalCustomerReviews);
+		rating = bookPage.isBookAverageRatingDisplayed();
+		String noOfCustReviews = getTextForElements(bookPage.totalCustomerReviews);
 		log.info("Total number of reviews displayed - " + noOfCustReviews);
 		extentReport.assertTrue(rating, "Customer Rating is displayed on Page", "Customer Rating is not displayed on Page");
-		isAvailable = isProductInStock();
+		isAvailable = bookPage.isProductInStock();
 		extentReport.assertTrue(isAvailable, "Product in Stock", "Product not in stock");
 	}
 
 	@Test( groups = { "functional", CLAZZ, Priority.P2 }, dependsOnMethods = "verifyProductTitleTest")
 	public void bookKindleEditionDetailsTest() throws Exception {
-		paperEdition = checkForEditions(TestConstants.Editions.PAPER_BK_EDITN);
-		if(paperEdition) {
-			paperPrice = checkIfEditionPriceDisplayed(TestConstants.Editions.PAPER_BK_EDITN);
-			extentReport.assertTrue(paperPrice, "Paperback edition is present and Price is shown", "Paperback edition is present but doesnt show price");
-		}
-		kinEdition = checkForEditions(TestConstants.Editions.KINDLE_EDITN);
-		if(kinEdition) {
-			kinPrice = checkIfEditionPriceDisplayed(TestConstants.Editions.KINDLE_EDITN);
-			extentReport.assertTrue(kinPrice, "Kindle Edition is present and Price is shown", "Kindle Edition is present but doesnt show price");
-		}
-		otherSellers = checkForEditions(TestConstants.Editions.OTHERS);
-		extentReport.assertTrue(otherSellers, "Other Sellers tab is present", "Did not Find other sellers tab");
 		if(isAvailable) {
-			addToCart = isAddToCartButtonDisplayed();
+			addToCart = bookPage.isAddToCartButtonDisplayed();
 			extentReport.assertTrue(addToCart, "Add to Cart button is present", "Add to Cart button is missing");
 		}
-		addToCart = isAddToWishlistDisplayed();
+		addToCart = bookPage.isAddToWishlistDisplayed();
 		extentReport.assertTrue(addToCart, "Add to Cart button is present", "Add to Cart button is missing");
+		paperEdition = checkForEditions(TestConstants.Books.PAPER_BK_EDITN);
+		if(paperEdition) {
+			paperPrice = bookPage.checkIfEditionPriceDisplayed(TestConstants.Books.PAPER_BK_EDITN);
+			extentReport.assertTrue(paperPrice, "Paperback edition is present and Price is shown", "Paperback edition is present but doesnt show price");
+		}
+		kinEdition = checkForEditions(TestConstants.Books.KINDLE_EDITN);
+		if(kinEdition) {
+			kinPrice = bookPage.checkIfEditionPriceDisplayed(TestConstants.Books.KINDLE_EDITN);
+			extentReport.assertTrue(kinPrice, "Kindle Edition is present and Price is shown", "Kindle Edition is present but doesnt show price");
+		}
+		otherSellers = checkForEditions(TestConstants.Books.OTHERS);
+		extentReport.assertTrue(otherSellers, "Other Sellers tab is present", "Did not Find other sellers tab");
 	}
 }

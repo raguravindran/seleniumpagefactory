@@ -14,7 +14,7 @@ public interface TestConstants {
 		public static final String COMPUTERS = "Computers";
 	}
 
-	interface Editions {
+	interface Books {
 		public static final String KINDLE_EDITN = "Kindle";
 		public static final String PAPER_BK_EDITN = "Paperback";
 		public static final String OTHERS = "Other Sellers";

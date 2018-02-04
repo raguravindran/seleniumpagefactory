@@ -15,6 +15,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * @author Saravana Raguram Ravindran
  * @date 02/01/2018
+ * 
+ * Parent for all the classes, initializes the driver, handles the common functionalities that are needed for the framework.
  */
 
 public class SeleniumGenericLibrary  {
@@ -76,12 +78,24 @@ public class SeleniumGenericLibrary  {
 			WebDriverWait wait = new WebDriverWait(driver, 30);
 			wait.until(ExpectedConditions.visibilityOf(element_));
 			if ((element_ != null) && (element_.isEnabled())) {
+				outputMessage("Element is visible clicking! - " + element_.toString());
 				element_.click();
 			}
 		}
 		catch(WebDriverException ex) {
 			outputMessage("Failed to click on element");
 		}
+	}
+	
+	/**
+	 * Wrapper method to get text on element
+	 * @param element_ - takes WebElement as argument 
+	 * @return
+	 * @throws Exception
+	 */
+	public String getTextForElements(WebElement element_) throws Exception {
+		isWebElementDisplayedOnPage(element_);
+		return element_.getText();
 	}
 
 	/**
@@ -92,6 +106,7 @@ public class SeleniumGenericLibrary  {
 	 */
 	protected boolean isWebElementDisplayedOnPage(WebElement element_) throws Exception {
 		try {
+			outputMessage("waiting to click on element.. - " + element_.toString());
 			waitUntilElementFound(element_);
 			return true;
 		} catch(Exception e) {
