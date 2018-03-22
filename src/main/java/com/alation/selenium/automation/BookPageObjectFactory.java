@@ -5,9 +5,13 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * @author Saravana Raguram Ravindran
@@ -21,14 +25,8 @@ public class BookPageObjectFactory extends SeleniumGenericLibrary{
 	private static final String IN_STOCK_TEXT = "In Stock.";
 	protected final String HEADER_PRODUCT_PRICE_LOCATOR = ".//span[contains(@class, 'header-price')]";
 
-	//search category
-	@FindBy(id = "searchDropdownBox")
-	public WebElement categorySelection;
-
 	//xpath
 	//list of webelements
-	@FindAll(@FindBy(xpath = ".//select[@id='searchDropdownBox']/option"))
-	public List<WebElement> dropdownOptions;
 
 	@FindBy(xpath = ".//h2[contains(@class, 'a-text-normal')][1]/parent::*")
 	public WebElement firstSearchResultLink;
@@ -59,7 +57,13 @@ public class BookPageObjectFactory extends SeleniumGenericLibrary{
 	
 	@FindBy(id = "ebooksProductTitle")
 	public WebElement ebooksProductTitleId;
-	
+
+	@FindBy(id = "acrPopover")
+	public WebElement acrPopover;
+
+	@FindBy(id = "histogramTable")
+	public WebElement reviewPopover;
+
 	@FindBy(id = "checkout-button")
 	public WebElement kindleCheckoutBtn;
 
@@ -72,14 +76,8 @@ public class BookPageObjectFactory extends SeleniumGenericLibrary{
 	@FindBy(id = "availability")
 	public WebElement stockAvailability;
 
-	@FindBy(id = "twotabsearchtextbox")
-	public WebElement searchBar;
-
 	@FindBy(id = "productTitle")
 	public WebElement productTitle;
-
-	@FindBy(id = "pagnNextLink")
-	public WebElement nextPageLink;
 
 	public BookPageObjectFactory(WebDriver driver) {
 		this.driver = driver; 
@@ -149,7 +147,25 @@ public class BookPageObjectFactory extends SeleniumGenericLibrary{
 		return false;
 	}
 
+	public boolean hoverOnElement() {
+		boolean hoverd = false;
+		Actions act = new Actions(driver);
+		act.moveToElement(acrPopover);
+		act.perform();
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 30);
+			wait.until(ExpectedConditions.visibilityOf(reviewPopover));
+			if(reviewPopover != null && reviewPopover.isDisplayed()) {
+				hoverd = true;
+			}
+		} catch (Exception e) {
+			hoverd = false;
+			log.info("Error" + e);
+		}
+		return hoverd;
+	}
 	/**
+	}
 	 * Check if the product is in stock, verify if the "In Stock." element is present on the page.
 	 * @return
 	 * @throws Exception
@@ -167,4 +183,6 @@ public class BookPageObjectFactory extends SeleniumGenericLibrary{
 		}
 		return stockAvail;
 	}
+
+
 }

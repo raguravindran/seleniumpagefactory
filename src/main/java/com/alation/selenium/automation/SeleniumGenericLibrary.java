@@ -4,13 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterClass;
 
 /**
  * @author Saravana Raguram Ravindran
@@ -29,6 +28,7 @@ public class SeleniumGenericLibrary  {
 	//gecko driver for firefox
 	private static final String GECKO_DRIVER = System.getProperty("user.dir") + "/drivers/geckodriver.exe";
 	private static final String CHROME_DRIVER_DIRECTORY = System.getProperty("user.dir") + "/drivers/chromedriver.exe";
+	private static final String OS_TYPE = System.getProperty("os.name").toLowerCase();
 	public static ExtentReporter extentReport;
 	//logger
 	public static final Logger log = Logger.getLogger(SeleniumGenericLibrary.class.getName());
@@ -42,13 +42,18 @@ public class SeleniumGenericLibrary  {
 
 	/**
 	 * Based on the browser that is sent the driver is initialized
-	 * @param testBrowser - firefox or chrome
+	 * @param testBrowser_ - firefox or chrome
 	 */
 	private void selectBrowser(String testBrowser_) {
 		if("firefox".equalsIgnoreCase(testBrowser_)) {
-			//gecko driver is initialized for firefox 
-			System.setProperty("webdriver.gecko.driver", GECKO_DRIVER);
-			driver = new FirefoxDriver();
+			//gecko driver is initialized for firefox
+			if(OS_TYPE.indexOf("win") >= 0){
+				System.setProperty("webdriver.gecko.driver", GECKO_DRIVER);
+				driver = new FirefoxDriver();
+			} else {
+				System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "/drivers/geckodriver");
+				driver = new FirefoxDriver();
+			}
 		} 
 		else if("chrome".equalsIgnoreCase(testBrowser_)) {
 			//chrome driver is initialized
@@ -66,14 +71,14 @@ public class SeleniumGenericLibrary  {
 		//maximize the window
 		driver.manage().window().maximize();
 		//wait until elements to be available
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 	}
 
 	/**
 	 * given element driver will explicitly wait for element
 	 * @param element_ - takes element that needs to be clicked
 	 */
-	public void waitForElementAndClick(WebElement element_) {
+	public void waitForElementAndClick(WebElement element_) throws Exception {
 		try{
 			WebDriverWait wait = new WebDriverWait(driver, 30);
 			wait.until(ExpectedConditions.visibilityOf(element_));
@@ -114,6 +119,9 @@ public class SeleniumGenericLibrary  {
 		}
 	}
 
+	protected boolean isWebElementDisplayedOnPage(By by) throws Exception {
+		return isWebElementDisplayedOnPage(driver.findElement(by));
+	}
 	/**
 	 * uses thread sleep and maxtime do{..}while loop to wait for the element to be found
 	 * @param element_ - takes webelement as parameter
@@ -127,9 +135,11 @@ public class SeleniumGenericLibrary  {
 			maxtime++;
 			try {
 				eleName = element_.getTagName();
+				log.info("Waiting for element to appear on page -> " + element_.toString());
 			}
 			catch(Exception e) {
-				continue;
+				log.error("Element was not found, trying again -> " + element_.toString());
+				throw new ElementNotVisibleException(element_.toString());
 			}
 		} while(eleName != null && maxtime < 5) ;
 	}
@@ -141,5 +151,13 @@ public class SeleniumGenericLibrary  {
 	protected void outputMessage( String message_ )
 	{
 		log.info( message_ );
+	}
+
+	//quits from driver and ends the browser session
+	@AfterClass(alwaysRun = true)
+	public void quitDriver() {
+		if(driver !=null) {
+			driver.quit();
+		}
 	}
 }

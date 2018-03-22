@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
@@ -24,11 +23,13 @@ import org.testng.annotations.BeforeSuite;
 public class AbstractBrowser extends SeleniumGenericLibrary{
 
 	public BookPageObjectFactory bookPage;
+	public HomePageObjectFactory homePage;
 	public static final Logger log = Logger.getLogger(AbstractBrowser.class.getName());
 
 	public void navigateToHomePage() {
 		init();
 		bookPage = new BookPageObjectFactory(driver);
+		homePage = new HomePageObjectFactory(driver);
 	}
 
 	/**
@@ -37,20 +38,20 @@ public class AbstractBrowser extends SeleniumGenericLibrary{
 	 * @param searchText - text to be searched for
 	 * @throws Exception
 	 */
-	private void searchForItemWithCategorySelection(String category, String searchText) throws Exception {
-		bookPage.categorySelection.click();
-		for(WebElement e : bookPage.dropdownOptions) {
+	public void searchForItemWithCategorySelection(String category, String searchText) throws Exception {
+		homePage.categorySelection.click();
+		for(WebElement e : homePage.dropdownOptions) {
 			if(e.getText().equalsIgnoreCase(category)) {
 				e.click();
 			}
 		}
-		String _srchBarText = bookPage.searchBar.getText();
+		String _srchBarText = homePage.searchBar.getText();
 		if( _srchBarText.trim() != null ) {
 			log.debug("SearchBar contains text, clearing the searchbar before typing.");
-			bookPage.searchBar.clear();
+			homePage.searchBar.clear();
 		}
-		bookPage.searchBar.sendKeys(searchText);
-		bookPage.searchBar.sendKeys(Keys.ENTER);
+		homePage.searchBar.sendKeys(searchText);
+		homePage.searchBar.sendKeys(Keys.ENTER);
 	}
 
 	/**
@@ -76,12 +77,6 @@ public class AbstractBrowser extends SeleniumGenericLibrary{
 			}
 		}
 		return false;
-	}
-
-	//quits from driver and ends the browser session
-	@AfterClass(alwaysRun = true)
-	public void quitDriver() {
-		driver.quit();
 	}
 
 	/**

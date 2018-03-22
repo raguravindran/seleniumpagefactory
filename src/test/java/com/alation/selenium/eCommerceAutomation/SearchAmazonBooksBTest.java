@@ -1,6 +1,7 @@
 package com.alation.selenium.eCommerceAutomation;
 
 import org.apache.log4j.Logger;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -35,6 +36,24 @@ public class SearchAmazonBooksBTest extends AbstractBrowser {
 		navigateToHomePage();
 	}
 
+	@Test( groups = "somke")
+	public void homepageSearchResultsTest() throws Exception {
+		searchForItemWithCategorySelection(TestConstants.Categories.BOOKS, SEARCH_TEXT);
+        int noOfResults = homePage.countResultsInSearchPage();
+        log.info("Total number of search results " + noOfResults);
+        Assert.assertEquals(noOfResults, homePage.getActualPageResultsSize());
+		boolean nextLink = homePage.isNextPageLinkIsDisplayedOnPage();
+		boolean nextString = homePage.isNextPageStringIsDisplayedOnPage();
+		if(!nextLink && nextString) {
+			log.info("Next link is disabled. !");
+		}
+		boolean prevLink = homePage.isPrevPageLinkIsDisplayedOnPage();
+		boolean prevString = homePage.isPrevPageStringIsDisplayedOnPage();
+		if(!prevLink && prevString) {
+            log.info("Previous page link is disabled. !");
+        }
+	}
+
 	//Group names are useful when running particular group li
 	@Test( groups = { "smoke", CLAZZ, Priority.P1 })
 	public void verifyProductTitleTest() throws Exception {
@@ -47,6 +66,8 @@ public class SearchAmazonBooksBTest extends AbstractBrowser {
 		String noOfCustReviews = getTextForElements(bookPage.totalCustomerReviews);
 		log.info("Total number of reviews displayed - " + noOfCustReviews);
 		extentReport.assertTrue(rating, "Customer Rating is displayed on Page", "Customer Rating is not displayed on Page");
+		boolean hoverd = bookPage.hoverOnElement();
+		extentReport.assertTrue(hoverd, "hover was succeesful", "failed to hover on the element");
 		isAvailable = bookPage.isProductInStock();
 		extentReport.assertTrue(isAvailable, "Product in Stock", "Product not in stock");
 	}
