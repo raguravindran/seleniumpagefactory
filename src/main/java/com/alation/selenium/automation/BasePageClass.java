@@ -20,11 +20,11 @@ import org.testng.annotations.BeforeSuite;
  * Like logging, common selenium actions etc.
  */
 
-public class AbstractBrowser extends SeleniumGenericLibrary{
+public class BasePageClass extends SeleniumGenericLibrary{
 
 	public BookPageObjectFactory bookPage;
 	public HomePageObjectFactory homePage;
-	public static final Logger log = Logger.getLogger(AbstractBrowser.class.getName());
+	public static final Logger log = Logger.getLogger(BasePageClass.class.getName());
 
 	public void navigateToHomePage() {
 		init();

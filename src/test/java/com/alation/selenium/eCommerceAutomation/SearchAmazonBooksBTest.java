@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.alation.selenium.automation.AbstractBrowser;
+import com.alation.selenium.automation.BasePageClass;
 import com.alation.selenium.automation.TestConstants;
 import com.alation.selenium.automation.TestConstants.Priority;
 
@@ -14,7 +14,7 @@ import com.alation.selenium.automation.TestConstants.Priority;
  * @date 02/01/2018
  */
 
-public class SearchAmazonBooksBTest extends AbstractBrowser {
+public class SearchAmazonBooksBTest extends BasePageClass {
 
 	public static final Logger log = Logger.getLogger(SearchAmazonBooksBTest.class.getName());
 	private static final String CLAZZ = "SearchAmazonBooksBTest";
