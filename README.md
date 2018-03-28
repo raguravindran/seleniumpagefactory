@@ -1,4 +1,4 @@
-#AlationProject
+#Selenium framework with Page Factory (using Page Object model)
 
 #Pre-requisite:
 Maven and eclipse/intellij runtime should be Java 7 or above
